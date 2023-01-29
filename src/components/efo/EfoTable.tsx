@@ -1,26 +1,24 @@
-import { useState } from "react";
 import { Divider, Pagination, Row, Table } from "antd";
-import { config } from "../../constants/config";
-import { useGetEfoQuery } from "../../services/fetchEfo";
+import { useDispatch } from "react-redux";
+import { useEfoTable } from "../../hooks/useEfoTable";
+import { setPageData } from "../../slices/efoSlice";
 
 export const EfoTable = () => {
-  const [page, setPage] = useState(config.initialPage);
-  const [pageSize, setPageSize] = useState(config.efoTermsPerPage);
+  const {
+    data,
+    loading,
+    page,
+    pageSize,
+    tableColumns,
+    tableDefaultCurrent,
+    totalElements,
+    totalPages,
+  } = useEfoTable();
 
-  const { isError, isLoading, data, isUninitialized, isFetching } =
-    useGetEfoQuery({ page, size: pageSize });
+  const dispatch = useDispatch();
 
   const columns = [
-    {
-      title: "Obo ID",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Label",
-      dataIndex: "label",
-      key: "label",
-    },
+    ...tableColumns,
     {
       title: "Action(s)",
       dataIndex: "",
@@ -28,7 +26,7 @@ export const EfoTable = () => {
       render: ({ url }: { url?: string }) =>
         !!url ? (
           <a href={url || ""} target="_blank" rel="noreferrer">
-            Visit Page
+            View More
           </a>
         ) : null,
     },
@@ -37,31 +35,30 @@ export const EfoTable = () => {
   return (
     <div>
       <Table
-        bordered
+        dataSource={data}
+        loading={loading}
         columns={columns}
         pagination={false}
         scroll={{ y: "75vh" }}
-        dataSource={data?.data || []}
+        bordered
         expandable={{
           expandedRowRender: (record) => <p>{record.description}</p>,
           rowExpandable: (record) =>
             !!record?.description && record?.description.length > 0,
         }}
         rowKey={(record) => record.id}
-        loading={isLoading || isUninitialized || isFetching}
       />
       <Divider type="vertical" />
       <Row justify={"center"}>
         <Pagination
-          pageSize={pageSize}
           current={page}
-          defaultCurrent={config.initialPage}
-          total={data?.totalPages * pageSize || 0}
-          showTotal={() => `Total ${data?.totalElements || 0} items`}
-          onChange={(page, pageSize) => {
-            setPage(page);
-            setPageSize(pageSize);
-          }}
+          total={totalPages}
+          pageSize={pageSize}
+          defaultCurrent={tableDefaultCurrent}
+          showTotal={() => `Total ${totalElements} items`}
+          onChange={(page, pageSize) =>
+            dispatch(setPageData({ page, pageSize }))
+          }
           showQuickJumper
         />
       </Row>
