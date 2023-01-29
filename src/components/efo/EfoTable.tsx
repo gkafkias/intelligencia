@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pagination, Table } from "antd";
+import { Divider, Pagination, Row, Table } from "antd";
 import { config } from "../../constants/config";
 import { useGetEfoQuery } from "../../services/fetchEfo";
 
@@ -50,18 +50,21 @@ export const EfoTable = () => {
         rowKey={(record) => record.id}
         loading={isLoading || isUninitialized || isFetching}
       />
-      <Pagination
-        pageSize={pageSize}
-        current={page}
-        defaultCurrent={config.initialPage}
-        total={data?.totalPages * pageSize || 0}
-        showTotal={() => `Total ${data?.totalElements || 0} items`}
-        onChange={(page, pageSize) => {
-          setPage(page);
-          setPageSize(pageSize);
-        }}
-        showQuickJumper
-      />
+      <Divider type="vertical" />
+      <Row justify={"center"}>
+        <Pagination
+          pageSize={pageSize}
+          current={page}
+          defaultCurrent={config.initialPage}
+          total={data?.totalPages * pageSize || 0}
+          showTotal={() => `Total ${data?.totalElements || 0} items`}
+          onChange={(page, pageSize) => {
+            setPage(page);
+            setPageSize(pageSize);
+          }}
+          showQuickJumper
+        />
+      </Row>
     </div>
   );
 };
