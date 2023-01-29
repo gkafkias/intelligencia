@@ -1,18 +1,14 @@
-import { Space, Table, Tag } from "antd";
-import { useSelector } from "react-redux";
-import { StatusTypes } from "../constants/misc";
+import { useState } from "react";
+import { Pagination, Table } from "antd";
+import { config } from "../constants/config";
 import { useGetEfoQuery } from "../services/fetchEfo";
-import { RootState } from "../store/store";
 
 export const EfoTable = () => {
-  const { data, status, page, total_pages } = useSelector(
-    (state: RootState) => state.efo
-  );
+  const [page, setPage] = useState(config.initialPage);
+  const [pageSize, setPageSize] = useState(config.efoTermsPerPage);
 
-  const { isLoading } = useGetEfoQuery(0);
-
-  const isTableLoading =
-    isLoading || status === StatusTypes.LOADING || status === StatusTypes.IDLE;
+  const { isError, isLoading, data, isUninitialized, isFetching } =
+    useGetEfoQuery({ page, size: pageSize });
 
   const columns = [
     {
@@ -61,9 +57,22 @@ export const EfoTable = () => {
     <div>
       <Table
         bordered
-        loading={isTableLoading}
-        dataSource={data}
         columns={columns}
+        pagination={false}
+        scroll={{ y: "75vh" }}
+        dataSource={data?.data || []}
+        loading={isLoading || isUninitialized || isFetching}
+      />
+      <Pagination
+        pageSize={pageSize}
+        current={page}
+        defaultCurrent={config.initialPage}
+        total={data?.totalPages * pageSize || 0}
+        showTotal={() => `Total ${data?.totalElements} items`}
+        onChange={(page, pageSize) => {
+          setPage(page);
+          setPageSize(pageSize);
+        }}
       />
     </div>
   );
