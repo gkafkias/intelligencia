@@ -25,7 +25,12 @@ export const EfoTable = () => {
       title: "Action(s)",
       dataIndex: "",
       key: "x",
-      render: () => <a>Visit Page</a>,
+      render: ({ url }: { url?: string }) =>
+        !!url ? (
+          <a href={url || ""} target="_blank" rel="noreferrer">
+            Visit Page
+          </a>
+        ) : null,
     },
   ];
 

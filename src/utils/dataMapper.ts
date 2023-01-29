@@ -9,5 +9,6 @@ export const mapTermData = (data: TermDTO[]): Term[] => {
     description: term?.description || [],
     definition_citation: term?.obo_definition_citation || [],
     synonyms: term?.synonyms,
+    url: term?.iri,
   }));
 };
