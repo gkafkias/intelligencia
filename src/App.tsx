@@ -1,10 +1,10 @@
 import "./App.css";
-import { EfoTable } from "./components/EfoTable";
+import { EfoContainer } from "./containers/EfoContainer";
 
 function App() {
   return (
     <div className="App">
-      <EfoTable />
+      <EfoContainer />
     </div>
   );
 }

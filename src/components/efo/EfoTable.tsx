@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pagination, Table } from "antd";
-import { config } from "../constants/config";
-import { useGetEfoQuery } from "../services/fetchEfo";
+import { config } from "../../constants/config";
+import { useGetEfoQuery } from "../../services/fetchEfo";
 
 export const EfoTable = () => {
   const [page, setPage] = useState(config.initialPage);
@@ -22,35 +22,11 @@ export const EfoTable = () => {
       key: "label",
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      render: (description: string[]) => (
-        <>
-          {description.map((desc) => {
-            return <p>{desc}</p>;
-          })}
-        </>
-      ),
+      title: "Action(s)",
+      dataIndex: "",
+      key: "x",
+      render: () => <a>Visit Page</a>,
     },
-    // {
-    //   title: "Synonyms",
-    //   dataIndex: "synonyms",
-    //   key: "synonyms",
-    //   render: (synonyms: string[]) => (
-    //     <Space size={[2, 2]} wrap>
-    //       {synonyms.map((synonym) => {
-    //         const color = synonym.length > 5 ? "geekblue" : "green";
-
-    //         return (
-    //           <Tag color={color} key={synonym}>
-    //             {synonym}
-    //           </Tag>
-    //         );
-    //       })}
-    //     </Space>
-    //   ),
-    // },
   ];
 
   return (
@@ -61,6 +37,12 @@ export const EfoTable = () => {
         pagination={false}
         scroll={{ y: "75vh" }}
         dataSource={data?.data || []}
+        expandable={{
+          expandedRowRender: (record) => <p>{record.description}</p>,
+          rowExpandable: (record) =>
+            !!record?.description && record?.description.length > 0,
+        }}
+        rowKey={(record) => record.id}
         loading={isLoading || isUninitialized || isFetching}
       />
       <Pagination
@@ -68,11 +50,12 @@ export const EfoTable = () => {
         current={page}
         defaultCurrent={config.initialPage}
         total={data?.totalPages * pageSize || 0}
-        showTotal={() => `Total ${data?.totalElements} items`}
+        showTotal={() => `Total ${data?.totalElements || 0} items`}
         onChange={(page, pageSize) => {
           setPage(page);
           setPageSize(pageSize);
         }}
+        showQuickJumper
       />
     </div>
   );
