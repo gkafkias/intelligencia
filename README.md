@@ -1,5 +1,7 @@
 # Intelligencia - Take at home test
 
+You can view the application deployed live [here](https://intelligencia.vercel.app/).
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Run locally
