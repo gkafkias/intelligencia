@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { config } from "../constants/config";
-import { mapTermData } from "../utils/dataMapper";
+import { mapTermData, getLabelFrequency } from "../utils/dataMapper";
 
 export const efoApi = createApi({
   reducerPath: "efoApi",
@@ -15,9 +15,11 @@ export const efoApi = createApi({
         const { page, _embedded } = response;
         const { terms } = _embedded || [];
         const resultData = mapTermData(terms);
+        const labelFrequency = getLabelFrequency(terms);
 
         return {
           data: resultData,
+          labelFrequency,
           totalElements: page.totalElements,
           totalPages: page.totalPages,
         };
